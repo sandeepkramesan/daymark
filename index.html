@@ -2,14 +2,21 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#050505" />
-    <meta name="description" content="A calm daily calendar widget for Nothing phones." />
+    <meta name="color-scheme" content="dark" />
+    <meta name="description" content="Dayline is a calm daily calendar widget: today's date, live local time, sunrise and sunset, plus Google Calendar events and tasks for the day you pick." />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Dayline" />
     <title>Dayline — today's calendar</title>
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" type="image/svg+xml" href="./logo.svg" />
+    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
     <link rel="stylesheet" href="./styles.css" />
-    <script src="./config.js"></script>
+    <script src="./core.js" defer></script>
+    <script src="./config.js" defer></script>
     <script src="./app.js" defer></script>
   </head>
   <body>
@@ -43,28 +50,79 @@
       </section>
 
       <nav class="week" id="week" aria-label="Choose a day">
-        <div class="week-labels" aria-hidden="true">
-          <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+        <div class="week-row">
+          <button class="week-nav" id="prevWeek" type="button" aria-label="Previous week">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+          </button>
+          <div class="week-grid">
+            <div class="week-labels" aria-hidden="true">
+              <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+            </div>
+            <div class="week-days" id="weekDays" role="group" aria-label="Days of the week"></div>
+          </div>
+          <button class="week-nav" id="nextWeek" type="button" aria-label="Next week">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+          </button>
         </div>
-        <div class="week-days" id="weekDays"></div>
       </nav>
 
       <section class="agenda" aria-labelledby="agendaHeading">
         <div class="section-heading">
           <h1 id="agendaHeading">TODAY</h1>
-          <a class="calendar-link" id="calendarLink" href="https://calendar.google.com/" target="_blank" rel="noreferrer">Google Calendar</a>
+          <div class="heading-actions">
+            <button class="today-link" id="todayButton" type="button" hidden>Today</button>
+            <a class="calendar-link" id="calendarLink" href="https://calendar.google.com/" target="_blank" rel="noreferrer noopener">Google Calendar</a>
+          </div>
         </div>
-        <div class="agenda-content" id="agendaContent" aria-live="polite">
-          <section class="connect-card" id="connectCard">
-            <h2>Connect your calendar</h2>
-            <p>See today’s Google Calendar events and tasks due today. Dayline reads your calendar only when you ask it to.</p>
-            <button class="action-button" id="connectButton" type="button">Connect Google Calendar <span aria-hidden="true">↗</span></button>
-          </section>
+        <div class="agenda-content" id="agendaContent">
+          <noscript>
+            <section class="status-card">
+              <h2>JavaScript is needed</h2>
+              <p>Dayline keeps the date, clock and calendar in sync in your browser. Enable JavaScript to use it.</p>
+            </section>
+          </noscript>
         </div>
       </section>
 
-      <p class="privacy-note" id="privacyNote">YOUR DAY, AT A GLANCE <span aria-hidden="true">·</span> NOTHING STORED</p>
-      <div class="sr-only" id="liveMessage" role="status"></div>
+      <footer class="widget-footer">
+        <p class="privacy-note">YOUR DAY, AT A GLANCE <span aria-hidden="true">·</span> NOTHING STORED</p>
+        <button class="info-button" id="aboutButton" type="button" aria-label="About Dayline: connection, location and privacy">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11.2v4.8"/><path d="M12 8.1v.5"/></svg>
+        </button>
+      </footer>
+      <div class="sr-only" id="liveMessage" role="status" aria-live="polite"></div>
     </main>
+
+    <template id="welcomeTemplate">
+      <section class="connect-card">
+        <h2 tabindex="-1">Connect your calendar</h2>
+        <p data-message>See events and tasks for the day you pick. Dayline asks Google for read-only access and keeps your sign-in only in memory.</p>
+        <button class="action-button" type="button" data-action="connect">Connect Google Calendar <span aria-hidden="true">↗</span></button>
+      </section>
+    </template>
+
+    <dialog class="sheet" id="connectDialog" aria-labelledby="connectTitle">
+      <div class="sheet-inner">
+        <header class="sheet-head">
+          <h2 id="connectTitle">Connect Google Calendar</h2>
+          <button class="icon-button sheet-close" id="closeConnect" type="button" aria-label="Close">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>
+          </button>
+        </header>
+        <div class="sheet-body" id="connectBody"></div>
+      </div>
+    </dialog>
+
+    <dialog class="sheet" id="aboutDialog" aria-labelledby="aboutTitle">
+      <div class="sheet-inner">
+        <header class="sheet-head">
+          <h2 id="aboutTitle">About Dayline</h2>
+          <button class="icon-button sheet-close" id="closeAbout" type="button" aria-label="Close">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>
+          </button>
+        </header>
+        <div class="sheet-body" id="aboutBody"></div>
+      </div>
+    </dialog>
   </body>
 </html>
