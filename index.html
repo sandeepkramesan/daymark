@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#050505" />
+    <meta name="description" content="A calm daily calendar widget for Nothing phones." />
+    <title>Dayline — today's calendar</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" type="image/svg+xml" href="./logo.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./config.js"></script>
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <main class="widget" aria-label="Dayline calendar widget">
+      <header class="topbar">
+        <a class="brand" href="#top" aria-label="Dayline home">
+          <img src="./logo.svg" width="23" height="23" alt="" />
+          <span>DAYLINE</span>
+        </a>
+        <button class="icon-button" id="refreshButton" type="button" aria-label="Refresh calendar" title="Refresh calendar">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.6 9a7 7 0 0 1 11.8-2L20 12M4 12l2.6 5a7 7 0 0 0 11.8-2"/></svg>
+        </button>
+      </header>
+
+      <section class="date-hero" id="top" aria-label="Selected date and time">
+        <div class="day-block">
+          <p class="weekday" id="weekday">Saturday</p>
+          <p class="day-number" id="dayNumber">31</p>
+        </div>
+        <div class="date-meta" aria-label="Month, year, and time">
+          <p class="month" id="month">October</p>
+          <p class="year" id="year">2026</p>
+          <p class="clock" id="clock" aria-label="Local time">--:--</p>
+        </div>
+        <div class="sun-panel" aria-label="Sunrise and sunset">
+          <div class="sun-row"><span>SUNRISE</span><strong id="sunriseTime">--:--</strong></div>
+          <div class="sun-row"><span>SUNSET</span><strong id="sunsetTime">--:--</strong></div>
+          <button class="sun-location" id="locationButton" type="button" aria-label="Use this device's location to calculate sunrise and sunset">USE LOCATION</button>
+          <span class="sun-status" id="sunStatus">LOCATION NEEDED</span>
+        </div>
+      </section>
+
+      <nav class="week" id="week" aria-label="Choose a day">
+        <div class="week-labels" aria-hidden="true">
+          <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+        </div>
+        <div class="week-days" id="weekDays"></div>
+      </nav>
+
+      <section class="agenda" aria-labelledby="agendaHeading">
+        <div class="section-heading">
+          <h1 id="agendaHeading">TODAY</h1>
+          <a class="calendar-link" id="calendarLink" href="https://calendar.google.com/" target="_blank" rel="noreferrer">Google Calendar</a>
+        </div>
+        <div class="agenda-content" id="agendaContent" aria-live="polite">
+          <section class="connect-card" id="connectCard">
+            <h2>Connect your calendar</h2>
+            <p>See today’s Google Calendar events and tasks due today. Dayline reads your calendar only when you ask it to.</p>
+            <button class="action-button" id="connectButton" type="button">Connect Google Calendar <span aria-hidden="true">↗</span></button>
+          </section>
+        </div>
+      </section>
+
+      <p class="privacy-note" id="privacyNote">YOUR DAY, AT A GLANCE <span aria-hidden="true">·</span> NOTHING STORED</p>
+      <div class="sr-only" id="liveMessage" role="status"></div>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "id": "./",
+  "name": "Dayline Calendar",
+  "short_name": "Dayline",
+  "description": "Today's date, sunrise, sunset, and calendar agenda.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#050505",
+  "theme_color": "#050505",
+  "icons": [
+    {
+      "src": "./logo.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
